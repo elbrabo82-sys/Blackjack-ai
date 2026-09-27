@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>BlackJack AI — Autonomous Trading System</title>
+<title>BlackJack AI v5.0</title>
 
 <style>
 *{box-sizing:border-box}
 
 :root{
 --bg:#02050a;
---panel:rgba(7,15,28,.82);
+--panel:rgba(7,15,28,.84);
 --line:rgba(0,185,255,.24);
 --blue:#00aaff;
 --cyan:#00e5ff;
@@ -29,12 +29,9 @@ color:var(--text);
 font-family:Arial,Helvetica,sans-serif
 }
 
-body{
-overflow-x:hidden
-}
+body{overflow-x:hidden}
 
-body:before,
-body:after{
+body:before,body:after{
 content:"";
 position:fixed;
 pointer-events:none;
@@ -77,8 +74,7 @@ z-index:0;
 background-image:
 linear-gradient(rgba(0,170,255,.045) 1px,transparent 1px),
 linear-gradient(90deg,rgba(0,170,255,.045) 1px,transparent 1px);
-background-size:42px 42px;
-mask-image:linear-gradient(to bottom,black,transparent 92%)
+background-size:42px 42px
 }
 
 .scan{
@@ -264,8 +260,7 @@ font-size:11px;
 margin:0 0 7px
 }
 
-input,
-select{
+input,select{
 width:100%;
 padding:13px;
 border-radius:11px;
@@ -276,8 +271,7 @@ outline:none;
 font-size:14px
 }
 
-input:focus,
-select:focus{
+input:focus,select:focus{
 border-color:var(--cyan);
 box-shadow:0 0 15px rgba(0,229,255,.12)
 }
@@ -286,6 +280,38 @@ box-shadow:0 0 15px rgba(0,229,255,.12)
 display:grid;
 grid-template-columns:repeat(3,1fr);
 gap:12px
+}
+
+.mode-buttons{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+margin-bottom:14px
+}
+
+.mode-btn{
+padding:13px;
+border:1px solid rgba(0,170,255,.25);
+border-radius:11px;
+background:#06101d;
+color:#8da5bb;
+font-weight:bold;
+cursor:pointer
+}
+
+.mode-btn.active{
+background:rgba(0,174,255,.12);
+border-color:var(--cyan);
+color:white;
+box-shadow:0 0 18px rgba(0,174,255,.15)
+}
+
+.manual{
+display:none
+}
+
+.manual.show{
+display:block
 }
 
 .start{
@@ -306,22 +332,9 @@ overflow:hidden;
 animation:buttonGlow 1.8s ease-in-out infinite
 }
 
-.start:before{
-content:"";
-position:absolute;
-top:0;
-bottom:0;
-width:35%;
-left:-50%;
-background:
-linear-gradient(
-90deg,
-transparent,
-rgba(255,255,255,.42),
-transparent
-);
-transform:skewX(-20deg);
-animation:shine 2.8s infinite
+.start.running{
+background:linear-gradient(90deg,#00a86b,#00e5a0);
+box-shadow:0 0 30px rgba(0,255,157,.4)
 }
 
 @keyframes buttonGlow{
@@ -330,15 +343,6 @@ box-shadow:
 0 0 34px rgba(0,174,255,.62),
 0 0 8px rgba(0,229,255,.45)
 }
-}
-
-@keyframes shine{
-to{left:125%}
-}
-
-.start.running{
-background:linear-gradient(90deg,#00a86b,#00e5a0);
-box-shadow:0 0 30px rgba(0,255,157,.4)
 }
 
 .metrics{
@@ -506,7 +510,7 @@ font-family:monospace;
 font-size:10px;
 color:#8aa4ba;
 line-height:1.8;
-max-height:110px;
+max-height:130px;
 overflow:hidden
 }
 
@@ -523,45 +527,17 @@ margin-top:18px
 }
 
 @media(max-width:700px){
-
-.grid,
-.metrics{
-grid-template-columns:1fr 1fr
-}
-
-.decision{
-grid-template-columns:80px 1fr
-}
-
-.signal{
-width:80px;
-height:80px
-}
-
-.title{
-font-size:17px
-}
-
-.status{
-font-size:9px
-}
-
-h1{
-font-size:25px
-}
-
+.grid,.metrics{grid-template-columns:1fr 1fr}
+.decision{grid-template-columns:80px 1fr}
+.signal{width:80px;height:80px}
+.title{font-size:17px}
+.status{font-size:9px}
+h1{font-size:25px}
 }
 
 @media(max-width:480px){
-
-.grid{
-grid-template-columns:1fr
-}
-
-.metrics{
-grid-template-columns:1fr 1fr
-}
-
+.grid{grid-template-columns:1fr}
+.metrics{grid-template-columns:1fr 1fr}
 }
 </style>
 </head>
@@ -609,7 +585,7 @@ DEMO ONLINE
 <section class="hero">
 
 <div class="badge">
-◉ TRADING INTELLIGENCE · v4.0 SIMULATION
+◉ TRADING INTELLIGENCE · v5.0
 </div>
 
 <h1>
@@ -617,16 +593,40 @@ Central de Operações
 </h1>
 
 <p class="desc">
-Motor experimental de análise e gerenciamento de risco em ambiente de demonstração.
-Os resultados abaixo são simulados.
+Sistema experimental de análise, entradas e gerenciamento de banca.
+Ambiente exclusivamente demonstrativo.
 </p>
 
 
 <div class="panel">
 
 <div class="section-title">
-CONFIGURAÇÃO DO ROBÔ
+GERENCIAMENTO DA BANCA
 </div>
+
+
+<div class="mode-buttons">
+
+<button
+class="mode-btn active"
+id="autoBtn"
+onclick="setMode('auto')"
+>
+🤖 AUTOMÁTICO
+</button>
+
+<button
+class="mode-btn"
+id="manualBtn"
+onclick="setMode('manual')"
+>
+🎛️ MANUAL
+</button>
+
+</div>
+
+
+<div id="autoConfig">
 
 <div class="grid">
 
@@ -706,6 +706,70 @@ Volatility 100
 
 </div>
 
+</div>
+
+
+<div
+id="manualConfig"
+class="manual"
+>
+
+<div class="grid">
+
+<div>
+
+<label>
+VALOR POR OPERAÇÃO ($)
+</label>
+
+<input
+id="manualStake"
+type="number"
+value="0.35"
+min="0.01"
+step="0.01"
+>
+
+</div>
+
+
+<div>
+
+<label>
+STOP WIN ($)
+</label>
+
+<input
+id="stopWin"
+type="number"
+value="5"
+min="0.01"
+step="0.01"
+>
+
+</div>
+
+
+<div>
+
+<label>
+STOP LOSS ($)
+</label>
+
+<input
+id="stopLoss"
+type="number"
+value="3"
+min="0.01"
+step="0.01"
+>
+
+</div>
+
+</div>
+
+</div>
+
 
 <button
 class="start"
@@ -714,10 +778,8 @@ id="start"
 ▶ INICIAR ROBÔ
 </button>
 
-</div>
-
-
-<div class="metrics">
+  </div>
+  <div class="metrics">
 
 <div class="metric">
 
@@ -785,7 +847,7 @@ class="blue"
 <div class="panel">
 
 <div class="section-title">
-MERCADO EM TEMPO REAL · SIMULAÇÃO
+MERCADO · SIMULAÇÃO
 </div>
 
 <div class="chart">
@@ -821,7 +883,7 @@ AGUARDANDO INICIALIZAÇÃO
 </strong>
 
 <p id="decisionText">
-Clique em INICIAR ROBÔ para ativar o ciclo de análise simulada.
+Clique em INICIAR ROBÔ para ativar o ciclo de análise.
 </p>
 
 <div class="riskbar">
@@ -843,7 +905,7 @@ id="riskfill"
 <div class="panel">
 
 <div class="section-title">
-GERENCIAMENTO DE BANCA
+CONTROLE DA SESSÃO
 </div>
 
 <div class="grid">
@@ -851,14 +913,14 @@ GERENCIAMENTO DE BANCA
 <div class="metric">
 
 <small>
-RISCO POR OPERAÇÃO
+ENTRADA ATUAL
 </small>
 
 <strong
 id="stake"
 class="yellow"
 >
-$0.50
+$1.00
 </strong>
 
 </div>
@@ -867,11 +929,11 @@ $0.50
 <div class="metric">
 
 <small>
-STOP VIRTUAL
+STOP WIN
 </small>
 
-<strong id="stop">
-5.0%
+<strong id="showWin">
+$5.00
 </strong>
 
 </div>
@@ -880,11 +942,11 @@ STOP VIRTUAL
 <div class="metric">
 
 <small>
-SEQUÊNCIA
+STOP LOSS
 </small>
 
-<strong id="streak">
-0
+<strong id="showLoss">
+$3.00
 </strong>
 
 </div>
@@ -906,21 +968,10 @@ HISTÓRICO DA SIMULAÇÃO
 
 <tr>
 
-<th>
-#
-</th>
-
-<th>
-SINAL
-</th>
-
-<th>
-RESULTADO
-</th>
-
-<th>
-SALDO
-</th>
+<th>#</th>
+<th>SINAL</th>
+<th>RESULTADO</th>
+<th>SALDO</th>
 
 </tr>
 
@@ -959,7 +1010,7 @@ id="log"
 
 <div>
 <span>[SYSTEM]</span>
-BlackJack AI v4 inicializado.
+BlackJack AI v5.0 inicializado.
 </div>
 
 <div>
@@ -988,7 +1039,9 @@ BLACKJACK AI · DEMO ENVIRONMENT · SIMULATION ENGINE
 
 <script>
 
-const $ = id => document.getElementById(id);
+const $ = id =>
+document.getElementById(id);
+
 
 const start = $("start");
 const bankroll = $("bankroll");
@@ -1004,16 +1057,23 @@ const decisionText = $("decisionText");
 const signal = $("signal");
 
 const stake = $("stake");
-const streak = $("streak");
 const riskfill = $("riskfill");
 
 const history = $("history");
 const log = $("log");
 
+const manualStake = $("manualStake");
+const stopWin = $("stopWin");
+const stopLoss = $("stopLoss");
+
+const showWin = $("showWin");
+const showLoss = $("showLoss");
+
 const canvas = $("chart");
 const ctx = canvas.getContext("2d");
 
 
+let mode = "auto";
 let running = false;
 let timer = null;
 
@@ -1025,8 +1085,49 @@ let wins = 0;
 let losses = 0;
 
 let simBalance = 100;
-let streakN = 0;
+let initialBalance = 100;
 
+
+/* =========================
+   MODO AUTOMÁTICO / MANUAL
+========================= */
+
+function setMode(newMode){
+
+if(running){
+return;
+}
+
+mode = newMode;
+
+$("autoBtn").classList.toggle(
+"active",
+mode === "auto"
+);
+
+$("manualBtn").classList.toggle(
+"active",
+mode === "manual"
+);
+
+$("autoConfig").style.display =
+mode === "auto"
+? "block"
+: "none";
+
+$("manualConfig").classList.toggle(
+"show",
+mode === "manual"
+);
+
+updateControls();
+
+}
+
+
+/* =========================
+   GRÁFICO
+========================= */
 
 function resize(){
 
@@ -1042,7 +1143,6 @@ drawChart();
 
 }
 
-
 window.addEventListener(
 "resize",
 resize
@@ -1050,6 +1150,10 @@ resize
 
 resize();
 
+
+/* =========================
+   LOG
+========================= */
 
 function addLog(text){
 
@@ -1063,15 +1167,17 @@ text;
 log.prepend(d);
 
 while(log.children.length > 7){
-
 log.lastChild.remove();
-
 }
 
 }
 
 
-function profile(){
+/* =========================
+   ENTRADA AUTOMÁTICA
+========================= */
+
+function getAutoStake(){
 
 const b =
 Math.max(
@@ -1079,7 +1185,8 @@ Math.max(
 Number(bankroll.value) || 100
 );
 
-const r = risk.value;
+const r =
+risk.value;
 
 const pct =
 r === "Conservador"
@@ -1088,31 +1195,86 @@ r === "Conservador"
 ? 0.01
 : 0.02;
 
+return b * pct;
+
+}
+
+
+/* =========================
+   ATUALIZAR PAINEL
+========================= */
+
+function updateControls(){
+
+if(mode === "auto"){
+
+const amount =
+getAutoStake();
 
 stake.textContent =
 "$" +
-(b * pct).toFixed(2);
-
+amount.toFixed(2);
 
 riskfill.style.width =
-r === "Conservador"
+risk.value === "Conservador"
 ? "25%"
-: r === "Equilibrado"
+: risk.value === "Equilibrado"
 ? "55%"
 : "85%";
 
+showWin.textContent =
+"Automático";
 
-$("stop").textContent =
-r === "Conservador"
-? "3.0%"
-: r === "Equilibrado"
-? "5.0%"
-: "8.0%";
+showLoss.textContent =
+risk.value === "Conservador"
+? "3% banca"
+: risk.value === "Equilibrado"
+? "5% banca"
+: "8% banca";
 
+}
+
+else{
+
+const amount =
+Math.max(
+0.01,
+Number(manualStake.value) || 0.35
+);
+
+stake.textContent =
+"$" +
+amount.toFixed(2);
+
+showWin.textContent =
+"$" +
+Math.max(
+0,
+Number(stopWin.value) || 0
+).toFixed(2);
+
+showLoss.textContent =
+"$" +
+Math.max(
+0,
+Number(stopLoss.value) || 0
+).toFixed(2);
+
+riskfill.style.width =
+"50%";
+
+}
 
 if(!running && count === 0){
 
+const b =
+Math.max(
+1,
+Number(bankroll.value) || 100
+);
+
 simBalance = b;
+initialBalance = b;
 
 balance.textContent =
 "$" +
@@ -1128,24 +1290,47 @@ pnl.textContent =
 
 risk.addEventListener(
 "change",
-profile
+updateControls
 );
 
 bankroll.addEventListener(
 "input",
-profile
+updateControls
 );
 
-profile();
+manualStake.addEventListener(
+"input",
+updateControls
+);
 
+stopWin.addEventListener(
+"input",
+updateControls
+);
+
+stopLoss.addEventListener(
+"input",
+updateControls
+);
+
+updateControls();
+
+
+/* =========================
+   DESENHAR GRÁFICO
+========================= */
 
 function drawChart(){
 
-const w = canvas.width;
-const h = canvas.height;
+const w =
+canvas.width;
 
-if(!w || !h)
+const h =
+canvas.height;
+
+if(!w || !h){
 return;
+}
 
 ctx.clearRect(
 0,
@@ -1154,9 +1339,9 @@ w,
 h
 );
 
-if(points.length < 2)
+if(points.length < 2){
 return;
-
+}
 
 const min =
 Math.min(...points) - 2;
@@ -1164,9 +1349,7 @@ Math.min(...points) - 2;
 const max =
 Math.max(...points) + 2;
 
-
 ctx.beginPath();
-
 
 points.forEach(
 (v,i)=>{
@@ -1179,8 +1362,8 @@ w;
 const y =
 h -
 (
-(v - min) /
-(max - min)
+(v-min) /
+(max-min)
 *
 h *
 0.78
@@ -1188,16 +1371,15 @@ h *
 h *
 0.08;
 
-
-if(i)
+if(i){
 ctx.lineTo(x,y);
-
-else
+}
+else{
 ctx.moveTo(x,y);
+}
 
 }
 );
-
 
 ctx.strokeStyle =
 "#00d9ff";
@@ -1220,7 +1402,113 @@ ctx.shadowBlur = 0;
 }
 
 
+/* =========================
+   VERIFICAR STOP
+========================= */
+
+function checkSessionStop(){
+
+const result =
+simBalance -
+initialBalance;
+
+
+/* MANUAL */
+
+if(mode === "manual"){
+
+const win =
+Math.max(
+0,
+Number(stopWin.value) || 0
+);
+
+const loss =
+Math.max(
+0,
+Number(stopLoss.value) || 0
+);
+
+if(
+win > 0 &&
+result >= win
+){
+
+stopRobot(
+"STOP WIN atingido: +$" +
+result.toFixed(2)
+);
+
+return true;
+
+}
+
+if(
+loss > 0 &&
+result <= -loss
+){
+
+stopRobot(
+"STOP LOSS atingido: -$" +
+Math.abs(result).toFixed(2)
+);
+
+return true;
+
+}
+
+}
+
+
+/* AUTOMÁTICO */
+
+else{
+
+const b =
+Math.max(
+1,
+Number(bankroll.value) || 100
+);
+
+const limit =
+risk.value === "Conservador"
+? b * 0.03
+: risk.value === "Equilibrado"
+? b * 0.05
+: b * 0.08;
+
+if(
+result <= -limit
+){
+
+stopRobot(
+"Limite de risco automático atingido."
+);
+
+return true;
+
+}
+
+}
+
+return false;
+
+}
+
+
+/* =========================
+   ANÁLISE DO MERCADO
+========================= */
+
 function marketStep(){
+
+if(!running){
+return;
+}
+
+if(checkSessionStop()){
+return;
+}
 
 const move =
 (
@@ -1232,20 +1520,17 @@ risk.value === "Agressivo"
 : 2
 );
 
-
 price =
 Math.max(
 70,
 price + move
 );
 
-
 points.push(price);
 
-
-if(points.length > 70)
+if(points.length > 70){
 points.shift();
-
+}
 
 drawChart();
 
@@ -1253,16 +1538,13 @@ drawChart();
 const momentum =
 points.length > 8
 ?
-points[points.length - 1]
--
+points[points.length - 1] -
 points[points.length - 8]
 :
 0;
 
-
 const vol =
 Math.abs(move);
-
 
 let s;
 let reason;
@@ -1274,7 +1556,7 @@ s =
 "NÃO ENTRAR";
 
 reason =
-"Volatilidade instantânea acima do filtro de segurança.";
+"Volatilidade acima do filtro de segurança.";
 
 }
 
@@ -1304,7 +1586,7 @@ s =
 "AGUARDAR";
 
 reason =
-"Não há confirmação suficiente para uma entrada simulada.";
+"Sem confirmação suficiente para uma entrada.";
 
 }
 
@@ -1319,18 +1601,14 @@ s === "ENTRAR"
 : ""
 );
 
-
 signal.textContent =
 s;
-
 
 decision.textContent =
 s;
 
-
 decisionText.textContent =
 reason;
-
 
 riskfill.style.width =
 Math.min(
@@ -1351,45 +1629,49 @@ simulateTrade(s);
 
 }
 
-
 addLog(reason);
+
+}
+  function simulateTrade(s){
+
+if(!running){
+return;
+}
+
+count++;
+
+let amount;
+
+if(mode === "manual"){
+
+amount =
+Math.max(
+0.01,
+Number(manualStake.value) || 0.35
+);
+
+}
+
+else{
+
+amount =
+getAutoStake();
 
 }
 
 
-function simulateTrade(s){
-
-count++;
-
-
-const b =
-Math.max(
-1,
-Number(bankroll.value) || 100
-);
-
-
-const pct =
-risk.value === "Conservador"
-? 0.005
-: risk.value === "Equilibrado"
-? 0.01
-: 0.02;
-
-
-const amount =
-b * pct;
-
+/*
+Resultado puramente demonstrativo.
+Não representa retorno real de mercado.
+*/
 
 const won =
 Math.random() > 0.43;
-
 
 const result =
 won
 ? amount * 0.82
 : -amount;
-
 
 simBalance += result;
 
@@ -1399,17 +1681,10 @@ won
 ? 1
 : 0;
 
-
 losses +=
 won
 ? 0
 : 1;
-
-
-streakN =
-won
-? Math.max(1, streakN + 1)
-: Math.min(-1, streakN - 1);
 
 
 balance.textContent =
@@ -1417,18 +1692,23 @@ balance.textContent =
 simBalance.toFixed(2);
 
 
+const totalResult =
+simBalance -
+initialBalance;
+
+
 pnl.textContent =
 (
-simBalance - b >= 0
+totalResult >= 0
 ? "+"
 : ""
 ) +
 "$" +
-(simBalance - b).toFixed(2);
+totalResult.toFixed(2);
 
 
 pnl.className =
-simBalance - b >= 0
+totalResult >= 0
 ? "green"
 : "red";
 
@@ -1442,10 +1722,6 @@ Math.round(
 wins / count * 100
 ) +
 "%";
-
-
-streak.textContent =
-streakN;
 
 
 const row =
@@ -1471,7 +1747,6 @@ s +
 : "LOSS -") +
 
 "$" +
-
 Math.abs(result).toFixed(2) +
 
 "</td>" +
@@ -1494,7 +1769,9 @@ history.innerHTML = "";
 history.prepend(row);
 
 
-while(history.children.length > 8){
+while(
+history.children.length > 8
+){
 
 history.lastChild.remove();
 
@@ -1512,21 +1789,77 @@ won
 )
 );
 
+
+/* verifica stop depois da operação */
+
+checkSessionStop();
+
 }
 
 
-start.onclick = () => {
+/* =========================
+   PARAR ROBÔ
+========================= */
 
-running = !running;
+function stopRobot(reason){
+
+running = false;
+
+clearInterval(timer);
+
+start.classList.remove(
+"running"
+);
+
+start.textContent =
+"▶ INICIAR ROBÔ";
+
+$("online").textContent =
+"DEMO ONLINE";
+
+signal.className =
+"signal";
+
+signal.textContent =
+"PARADO";
+
+decision.textContent =
+"SESSÃO ENCERRADA";
+
+decisionText.textContent =
+reason;
+
+addLog(reason);
+
+}
+
+
+/* =========================
+   BOTÃO PRINCIPAL
+========================= */
+
+start.onclick = () => {
 
 
 if(running){
 
-start.classList.add("running");
+stopRobot(
+"Robô pausado pelo usuário."
+);
+
+return;
+
+}
+
+
+running = true;
+
+start.classList.add(
+"running"
+);
 
 start.textContent =
 "■ ROBÔ EM EXECUÇÃO";
-
 
 $("online").textContent =
 "IA ANALISANDO";
@@ -1537,19 +1870,25 @@ decision.textContent =
 
 
 decisionText.textContent =
-"Coletando dados simulados e aplicando filtros de risco.";
+mode === "manual"
+?
+"IA analisando entradas com gerenciamento personalizado."
+:
+"IA analisando entradas com gerenciamento automático.";
 
 
-price = 100;
-
-points = [price];
-
-
-simBalance =
+initialBalance =
 Math.max(
 1,
 Number(bankroll.value) || 100
 );
+
+simBalance =
+initialBalance;
+
+price = 100;
+
+points = [price];
 
 
 balance.textContent =
@@ -1560,14 +1899,47 @@ simBalance.toFixed(2);
 pnl.textContent =
 "$0.00";
 
-
 pnl.className =
 "green";
 
 
 addLog(
-"Motor de simulação iniciado."
+"Modo " +
+(
+mode === "manual"
+? "MANUAL"
+: "AUTOMÁTICO"
+) +
+" iniciado."
 );
+
+
+if(mode === "manual"){
+
+addLog(
+"Entrada: $" +
+Number(
+manualStake.value || 0.35
+).toFixed(2) +
+" | Stop Win: $" +
+Number(
+stopWin.value || 0
+).toFixed(2) +
+" | Stop Loss: $" +
+Number(
+stopLoss.value || 0
+).toFixed(2)
+);
+
+}
+
+else{
+
+addLog(
+"Gerenciamento automático conforme banca e risco."
+);
+
+}
 
 
 clearInterval(timer);
@@ -1579,52 +1951,9 @@ marketStep,
 1800
 );
 
-
-}
-
-else{
-
-clearInterval(timer);
-
-
-start.classList.remove(
-"running"
-);
-
-
-start.textContent =
-"▶ INICIAR ROBÔ";
-
-
-$("online").textContent =
-"DEMO ONLINE";
-
-
-signal.className =
-"signal";
-
-
-signal.textContent =
-"AGUARDAR";
-
-
-decision.textContent =
-"ROBÔ PAUSADO";
-
-
-decisionText.textContent =
-"Simulação interrompida. Nenhuma ordem real foi enviada.";
-
-
-addLog(
-"Motor de simulação pausado."
-);
-
-}
-
 };
 
 </script>
 
 </body>
-  </html>
+</html>
