@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BlackJack AI</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
+
+body {
+  background: #05080d;
+  color: #ffffff;
+  font-family: Arial, sans-serif;
+}
+
+.container {
+  width: 100%;
+  max-width: 1000px;
+  margin: auto;
+  padding: 20px;
+}
+
+header {
+  padding: 25px;
+  border: 1px solid #008cff;
+  border-radius: 18px;
+  background: #08111b;
+  margin-bottom: 20px;
+}
+
+.logo {
+  color: #00aaff;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.subtitle {
+  color: #71879a;
+  font-size: 12px;
+  letter-spacing: 2px;
+  margin-top: 7px;
+}
+
+.status {
+  display: inline-block;
+  margin-top: 15px;
+  padding: 7px 12px;
+  border: 1px solid #16c784;
+  border-radius: 20px;
+  color: #35ff91;
+  font-size: 11px;
+}
+
+h1 {
+  font-size: 23px;
+  margin: 20px 0 5px;
+}
+
+.description {
+  color: #71879a;
+  font-size: 13px;
+  margin-bottom: 20px;
+}
+
+.panel {
+  background: #08111b;
+  border: 1px solid #17364c;
+  border-radius: 18px;
+  padding: 20px;
+}
+
+label {
+  display: block;
+  color: #8da4b6;
+  font-size: 12px;
+  margin-bottom: 7px;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 14px;
+  background: #03070b;
+  color: white;
+  border: 1px solid #24506b;
+  border-radius: 10px;
+  font-size: 15px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin-top: 15px;
+}
+
+button {
+  width: 100%;
+  padding: 16px;
+  margin-top: 18px;
+  border: 0;
+  border-radius: 10px;
+  background: #008cff;
+  color: white;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.card {
+  background: #08111b;
+  border: 1px solid #17364c;
+  border-radius: 15px;
+  padding: 18px;
+}
+
+.card-title {
+  color: #71879a;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.card-value {
+  color: #00aaff;
+  font-size: 21px;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.main {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.box {
+  background: #08111b;
+  border: 1px solid #17364c;
+  border-radius: 18px;
+  padding: 20px;
+}
+
+.box h2 {
+  font-size: 15px;
+  margin-top: 0;
+}
+
+.chart {
+  height: 250px;
+  margin-top: 15px;
+  border: 1px solid #16405b;
+  border-radius: 12px;
+  background:
+    linear-gradient(#0d2231 1px, transparent 1px),
+    linear-gradient(90deg, #0d2231 1px, transparent 1px);
+  background-size: 35px 35px;
+  position: relative;
+}
+
+.chart-line {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  top: 50%;
+  height: 3px;
+  background: #00aaff;
+  transform: rotate(-5deg);
+}
+
+.ai {
+  text-align: center;
+  padding: 30px 10px;
+}
+
+.ai-circle {
+  width: 75px;
+  height: 75px;
+  margin: auto;
+  border: 2px solid #00aaff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #00aaff;
+  font-weight: bold;
+  font-size: 24px;
+}
+
+.decision {
+  color: #00aaff;
+  font-size: 25px;
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+.activity {
+  margin-top: 20px;
+}
+
+.log {
+  padding: 12px 0;
+  border-bottom: 1px solid #132936;
+  color: #8da4b6;
+  font-size: 12px;
+}
+
+@media (max-width: 700px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cards {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .main {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<header>
+  <div class="logo">♠ BLACKJACK AI</div>
+  <div class="subtitle">AUTONOMOUS TRADING SYSTEM</div>
+  <div class="status">● DEMO READY</div>
+</header>
+
+<h1>Trading Intelligence</h1>
+
+<div class="description">
+  Sistema de análise automatizada para operações em modo demonstração.
+</div>
+
+<div class="panel">
+
+  <label>BANCA INICIAL</label>
+
+  <input
+    type="number"
+    value="100"
+    min="1"
+  >
+
+  <div class="grid">
+
+    <div>
+      <label>MODO DE RISCO</label>
+
+      <select>
+        <option>Conservador — 0,5%</option>
+        <option selected>Equilibrado — 1%</option>
+        <option>Agressivo — 2%</option>
+      </select>
+    </div>
+
+    <div>
+      <label>MERCADO</label>
+
+      <select>
+        <option>Dólar — DEMO</option>
+        <option>Volatilidade — DEMO</option>
+        <option>Índice — DEMO</option>
+      </select>
+    </div>
+
+    <div>
+      <label>ESTRATÉGIA</label>
+
+      <select>
+        <option>Balanceada</option>
+        <option>Recência</option>
+        <option>Frequência</option>
+        <option>Contrarian</option>
+      </select>
+    </div>
+
+  </div>
+
+  <button>
+    ▶ INICIAR ROBÔ
+  </button>
+
+</div>
+
+<div class="cards">
+
+  <div class="card">
+    <div class="card-title">Banca</div>
+    <div class="card-value">$100.00</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Resultado</div>
+    <div class="card-value">$0.00</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Operações</div>
+    <div class="card-value">0</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Status</div>
+    <div class="card-value">PARADO</div>
+  </div>
+
+</div>
+
+<div class="main">
+
+  <div class="box">
+
+    <h2>📈 MARKET ANALYSIS</h2>
+
+    <div class="chart">
+      <div class="chart-line"></div>
+    </div>
+
+  </div>
+
+  <div class="box">
+
+    <h2>🧠 AI DECISION</h2>
+
+    <div class="ai">
+
+      <div class="ai-circle">
+        AI
+      </div>
+
+      <div class="decision">
+        AGUARDANDO
+      </div>
+
+      <div class="description">
+        Robô desligado
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<div class="box activity">
+
+  <h2>⚡ ATIVIDADE DO SISTEMA</h2>
+
+  <div class="log">
+    [SYSTEM] BlackJack AI inicializado.
+  </div>
+
+  <div class="log">
+    [AI] Aguardando inicialização do robô.
+  </div>
+
+</div>
+
+</div>
+
+</body>
+      </html>
