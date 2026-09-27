@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BlackJack AI</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #03070d;
+      color: #ffffff;
+      min-height: 100vh;
+    }
+
+    .app {
+      max-width: 1100px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 0;
+      border-bottom: 1px solid #10253b;
+      margin-bottom: 25px;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      color: #00aaff;
+    }
+
+    .subtitle {
+      color: #6f8296;
+      font-size: 11px;
+      margin-top: 4px;
+      letter-spacing: 1px;
+    }
+
+    .status {
+      color: #00aaff;
+      font-size: 12px;
+    }
+
+    .status-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background: #00aaff;
+      border-radius: 50%;
+      margin-right: 6px;
+      box-shadow: 0 0 10px #00aaff;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #07111e, #03070d);
+      border: 1px solid #123552;
+      border-radius: 18px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 25px rgba(0, 150, 255, 0.08);
+    }
+
+    .hero h1 {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    .hero p {
+      color: #8093a8;
+      font-size: 14px;
+    }
+
+    .control-panel {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .control {
+      background: #07111b;
+      border: 1px solid #15334d;
+      border-radius: 12px;
+      padding: 15px;
+    }
+
+    .control label {
+      display: block;
+      color: #71859a;
+      font-size: 11px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    input, select {
+      width: 100%;
+      background: #03070d;
+      border: 1px solid #1b405e;
+      color: white;
+      padding: 11px;
+      border-radius: 8px;
+      outline: none;
+    }
+
+    input:focus, select:focus {
+      border-color: #00aaff;
+      box-shadow: 0 0 8px rgba(0,170,255,.2);
+    }
+
+    .start-area {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .start-btn {
+      width: 100%;
+      max-width: 420px;
+      padding: 17px;
+      border: 1px solid #00aaff;
+      border-radius: 10px;
+      background: #061a2b;
+      color: #00aaff;
+      font-size: 17px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: .2s;
+      box-shadow: 0 0 15px rgba(0,170,255,.15);
+    }
+
+    .start-btn:hover {
+      background: #092b46;
+      box-shadow: 0 0 25px rgba(0,170,255,.3);
+    }
+
+    .start-btn.running {
+      color: #ff4d6d;
+      border-color: #ff4d6d;
+      background: #210912;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background: #07111b;
+      border: 1px solid #123552;
+      border-radius: 14px;
+      padding: 18px;
+    }
+
+    .card-title {
+      color: #6f8296;
+      font-size: 11px;
+      text-transform: uppercase;
+      margin-bottom: 9px;
+    }
+
+    .card-value {
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .blue {
+      color: #00aaff;
+    }
+
+    .green {
+      color: #00e6a8;
+    }
+
+    .red {
+      color: #ff4d6d;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 20px;
+    }
+
+    .panel {
+      background: #07111b;
+      border: 1px solid #123552;
+      border-radius: 16px;
+      padding: 20px;
+    }
+
+    .panel h2 {
+      font-size: 15px;
+      margin-bottom: 16px;
+    }
+
+    .market {
+      height: 260px;
+      border-radius: 10px;
+      border: 1px solid #123552;
+      background:
+        linear-gradient(rgba(0,170,255,.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,170,255,.06) 1px, transparent 1px);
+      background-size: 40px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .chart-line {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50%;
+      height: 2px;
+      background: #00aaff;
+      box-shadow: 0 0 10px #00aaff;
+      transform: rotate(-4deg);
+    }
+
+    .decision {
+      text-align: center;
+      padding: 25px 10px;
+    }
+
+    .decision-label {
+      color: #6f8296;
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+
+    .decision-value {
+      font-size: 30px;
+      font-weight: bold;
+      color: #00aaff;
+      margin: 12px 0;
+    }
+
+    .feed {
+      max-height: 210px;
+      overflow-y: auto;
+    }
+
+    .feed-item {
+      padding: 10px 0;
+      border-bottom: 1px solid #10253b;
+      font-size: 12px;
+      color: #8ca0b4;
+    }
+
+    .feed-item strong {
+      color: #00aaff;
+    }
+
+    .footer {
+      text-align: center;
+      color: #506274;
+      font-size: 10px;
+      padding: 25px 0 10px;
+    }
+
+    @media (max-width: 750px) {
+      .control-panel,
+      .cards,
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .header {
+        align-items: flex-start;
+      }
+
+      .hero h1 {
+        font-size: 23px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="app">
+
+    <header class="header">
+      <div>
+        <div class="logo">♠ BLACKJACK AI</div>
+        <div class="subtitle">AUTONOMOUS TRADING SYSTEM</div>
+      </div>
+
+      <div class="status">
+        <span class="status-dot"></span>
+        DEMO READY
+      </div>
+    </header>
+
+    <section class="hero">
+      <h1>Trading Intelligence</h1>
+      <p>
+        Sistema de análise automatizada para operações em modo demonstração.
+      </p>
+
+      <div class="control-panel">
+
+        <div class="control">
+          <label>Banca Demo</label>
+          <input id="bankroll" type="number" value="100" min="1" step="1">
+        </div>
+
+        <div class="control">
+          <
