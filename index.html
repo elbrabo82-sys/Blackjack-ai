@@ -2,706 +2,566 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>BlackJack AI — Autonomous Trading System</title>
 
 <style>
-*{
-  box-sizing:border-box;
-}
+*{box-sizing:border-box}
 
 :root{
-  --bg:#03060b;
-  --panel:rgba(8,15,28,.78);
-  --line:rgba(0,174,255,.24);
-  --blue:#00aaff;
-  --cyan:#00e5ff;
-  --green:#00ff9d;
-  --red:#ff496c;
-  --text:#f5fbff;
-  --muted:#7890a7;
+--bg:#02050a;
+--panel:rgba(7,15,28,.82);
+--line:rgba(0,185,255,.24);
+--blue:#00aaff;
+--cyan:#00e5ff;
+--green:#00ff9d;
+--yellow:#ffd34d;
+--red:#ff496c;
+--text:#f5fbff;
+--muted:#7890a7
 }
 
 html,body{
-  margin:0;
-  min-height:100%;
-  background:var(--bg);
-  color:var(--text);
-  font-family:Arial,Helvetica,sans-serif;
+margin:0;
+min-height:100%;
+background:var(--bg);
+color:var(--text);
+font-family:Arial,Helvetica,sans-serif
 }
 
 body{
-  overflow-x:hidden;
+overflow-x:hidden
 }
-
-/* LUZES DO FUNDO */
 
 body:before,
 body:after{
-  content:"";
-  position:fixed;
-  pointer-events:none;
-  z-index:0;
-  border-radius:50%;
-  filter:blur(70px);
-  opacity:.16;
+content:"";
+position:fixed;
+pointer-events:none;
+z-index:0;
+border-radius:50%;
+filter:blur(75px);
+opacity:.18
 }
 
 body:before{
-  width:280px;
-  height:280px;
-  background:#0077ff;
-  top:8%;
-  left:-100px;
-  animation:float1 8s ease-in-out infinite;
+width:320px;
+height:320px;
+background:#0077ff;
+top:5%;
+left:-120px;
+animation:f1 8s ease-in-out infinite
 }
 
 body:after{
-  width:300px;
-  height:300px;
-  background:#00e5ff;
-  right:-120px;
-  bottom:5%;
-  animation:float2 10s ease-in-out infinite;
+width:330px;
+height:330px;
+background:#00e5ff;
+right:-140px;
+bottom:3%;
+animation:f2 10s ease-in-out infinite
 }
 
-@keyframes float1{
-  50%{
-    transform:translate(100px,80px) scale(1.2);
-  }
+@keyframes f1{
+50%{transform:translate(110px,90px) scale(1.2)}
 }
 
-@keyframes float2{
-  50%{
-    transform:translate(-80px,-70px) scale(.9);
-  }
+@keyframes f2{
+50%{transform:translate(-90px,-80px) scale(.9)}
 }
 
 .grid-bg{
-  position:fixed;
-  inset:0;
-  z-index:0;
-  pointer-events:none;
-
-  background-image:
-    linear-gradient(rgba(0,170,255,.045) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(0,170,255,.045) 1px,transparent 1px);
-
-  background-size:42px 42px;
-
-  mask-image:linear-gradient(
-    to bottom,
-    black,
-    transparent 90%
-  );
+position:fixed;
+inset:0;
+z-index:0;
+background-image:
+linear-gradient(rgba(0,170,255,.045) 1px,transparent 1px),
+linear-gradient(90deg,rgba(0,170,255,.045) 1px,transparent 1px);
+background-size:42px 42px;
+mask-image:linear-gradient(to bottom,black,transparent 92%)
 }
 
 .scan{
-  position:fixed;
-  left:0;
-  right:0;
-  top:-20%;
-  height:35%;
-  z-index:0;
-  pointer-events:none;
-
-  background:linear-gradient(
-    transparent,
-    rgba(0,190,255,.07),
-    transparent
-  );
-
-  animation:scan 7s linear infinite;
+position:fixed;
+left:0;
+right:0;
+top:-20%;
+height:35%;
+z-index:0;
+background:linear-gradient(
+transparent,
+rgba(0,190,255,.07),
+transparent
+);
+animation:scan 7s linear infinite;
+pointer-events:none
 }
 
 @keyframes scan{
-  to{
-    transform:translateY(420%);
-  }
+to{transform:translateY(420%)}
 }
-
-/* CONTAINER */
 
 .container{
-  position:relative;
-  z-index:1;
-
-  width:min(1100px,100%);
-  margin:auto;
-
-  padding:18px 14px 40px;
+position:relative;
+z-index:1;
+width:min(1100px,100%);
+margin:auto;
+padding:18px 14px 40px
 }
 
-/* HEADER */
-
 header{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-
-  padding:14px 4px 20px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:12px;
+padding:14px 4px 20px
 }
 
 .brand{
-  display:flex;
-  align-items:center;
-  gap:12px;
+display:flex;
+align-items:center;
+gap:12px
 }
 
 .logo{
-  width:48px;
-  height:48px;
-
-  border:1px solid rgba(0,229,255,.65);
-  border-radius:15px;
-
-  display:grid;
-  place-items:center;
-
-  font-size:25px;
-
-  background:rgba(0,130,255,.08);
-
-  box-shadow:
-    0 0 22px rgba(0,174,255,.25),
-    inset 0 0 20px rgba(0,174,255,.08);
+width:48px;
+height:48px;
+border:1px solid rgba(0,229,255,.65);
+border-radius:15px;
+display:grid;
+place-items:center;
+font-size:25px;
+background:rgba(0,130,255,.08);
+box-shadow:
+0 0 22px rgba(0,174,255,.25),
+inset 0 0 20px rgba(0,174,255,.08)
 }
 
 .title{
-  font-size:21px;
-  font-weight:900;
-  letter-spacing:2px;
+font-size:21px;
+font-weight:900;
+letter-spacing:2px
 }
 
 .subtitle{
-  font-size:10px;
-  color:var(--muted);
-  letter-spacing:2px;
-  margin-top:4px;
+font-size:10px;
+color:var(--muted);
+letter-spacing:2px;
+margin-top:4px
 }
 
 .status{
-  display:flex;
-  align-items:center;
-  gap:8px;
-
-  border:1px solid rgba(0,255,157,.25);
-  background:rgba(0,255,157,.06);
-
-  padding:9px 12px;
-
-  border-radius:30px;
-
-  font-size:10px;
-  font-weight:bold;
-
-  color:#7dffc9;
+display:flex;
+align-items:center;
+gap:8px;
+border:1px solid rgba(0,255,157,.25);
+background:rgba(0,255,157,.06);
+padding:9px 12px;
+border-radius:30px;
+font-size:10px;
+font-weight:bold;
+color:#7dffc9
 }
 
 .dot{
-  width:8px;
-  height:8px;
-
-  border-radius:50%;
-
-  background:var(--green);
-
-  box-shadow:0 0 12px var(--green);
-
-  animation:pulse 1.2s infinite;
+width:8px;
+height:8px;
+border-radius:50%;
+background:var(--green);
+box-shadow:0 0 12px var(--green);
+animation:pulse 1.2s infinite
 }
 
 @keyframes pulse{
-  50%{
-    opacity:.35;
-    transform:scale(.7);
-  }
+50%{
+opacity:.35;
+transform:scale(.7)
+}
 }
 
-/* HERO */
-
 .hero{
-  border:1px solid var(--line);
-  border-radius:24px;
-
-  padding:22px;
-
-  background:
-    linear-gradient(
-      145deg,
-      rgba(8,18,34,.92),
-      rgba(3,8,16,.84)
-    );
-
-  box-shadow:
-    0 0 35px rgba(0,120,255,.09),
-    inset 0 0 40px rgba(0,100,255,.035);
-
-  overflow:hidden;
-
-  position:relative;
+border:1px solid var(--line);
+border-radius:24px;
+padding:22px;
+background:
+linear-gradient(
+145deg,
+rgba(8,18,34,.92),
+rgba(3,8,16,.84)
+);
+box-shadow:
+0 0 35px rgba(0,120,255,.09),
+inset 0 0 40px rgba(0,100,255,.035);
+overflow:hidden;
+position:relative
 }
 
 .hero:after{
-  content:"";
-
-  position:absolute;
-  top:0;
-  left:-30%;
-
-  width:35%;
-  height:1px;
-
-  background:
-    linear-gradient(
-      90deg,
-      transparent,
-      var(--cyan),
-      transparent
-    );
-
-  animation:laser 4s linear infinite;
+content:"";
+position:absolute;
+top:0;
+left:-30%;
+width:35%;
+height:1px;
+background:linear-gradient(
+90deg,
+transparent,
+var(--cyan),
+transparent
+);
+animation:laser 4s linear infinite
 }
 
 @keyframes laser{
-  to{
-    left:110%;
-  }
+to{left:110%}
 }
 
 .badge{
-  display:inline-flex;
-  gap:7px;
-  align-items:center;
-
-  color:#7ddcff;
-
-  font-size:10px;
-  letter-spacing:2px;
-
-  border:1px solid rgba(0,170,255,.28);
-
-  padding:7px 10px;
-
-  border-radius:20px;
-
-  background:rgba(0,170,255,.06);
+display:inline-flex;
+gap:7px;
+align-items:center;
+color:#7ddcff;
+font-size:10px;
+letter-spacing:2px;
+border:1px solid rgba(0,170,255,.28);
+padding:7px 10px;
+border-radius:20px;
+background:rgba(0,170,255,.06)
 }
 
 h1{
-  font-size:30px;
-  margin:15px 0 7px;
-  letter-spacing:.5px;
+font-size:30px;
+margin:15px 0 7px
 }
 
 .desc{
-  color:var(--muted);
-  font-size:13px;
-
-  margin:0 0 20px;
-
-  line-height:1.55;
+color:var(--muted);
+font-size:13px;
+margin:0 0 20px;
+line-height:1.55
 }
 
-/* PAINÉIS */
-
 .panel{
-  margin-top:15px;
-
-  border:1px solid var(--line);
-  border-radius:18px;
-
-  background:var(--panel);
-
-  backdrop-filter:blur(12px);
-
-  padding:17px;
+margin-top:15px;
+border:1px solid var(--line);
+border-radius:18px;
+background:var(--panel);
+backdrop-filter:blur(12px);
+padding:17px
 }
 
 .section-title{
-  font-size:11px;
-  color:#8fdfff;
-
-  letter-spacing:2px;
-
-  margin-bottom:13px;
+font-size:11px;
+color:#8fdfff;
+letter-spacing:2px;
+margin-bottom:13px
 }
 
-/* CAMPOS */
-
 label{
-  display:block;
-
-  color:#8da5bb;
-
-  font-size:11px;
-
-  margin:0 0 7px;
+display:block;
+color:#8da5bb;
+font-size:11px;
+margin:0 0 7px
 }
 
 input,
 select{
-  width:100%;
-
-  padding:13px;
-
-  border-radius:11px;
-
-  border:1px solid rgba(0,170,255,.24);
-
-  background:#06101d;
-
-  color:white;
-
-  outline:none;
-
-  font-size:14px;
+width:100%;
+padding:13px;
+border-radius:11px;
+border:1px solid rgba(0,170,255,.24);
+background:#06101d;
+color:white;
+outline:none;
+font-size:14px
 }
 
 input:focus,
 select:focus{
-  border-color:var(--cyan);
-
-  box-shadow:
-    0 0 15px rgba(0,229,255,.12);
+border-color:var(--cyan);
+box-shadow:0 0 15px rgba(0,229,255,.12)
 }
 
 .grid{
-  display:grid;
-
-  grid-template-columns:
-    repeat(3,1fr);
-
-  gap:12px;
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:12px
 }
 
-/* BOTÃO */
-
 .start{
-  width:100%;
-
-  margin-top:15px;
-
-  padding:17px;
-
-  border:0;
-
-  border-radius:13px;
-
-  background:
-    linear-gradient(
-      90deg,
-      #007cff,
-      #00cfff
-    );
-
-  color:white;
-
-  font-weight:900;
-
-  letter-spacing:2px;
-
-  font-size:14px;
-
-  cursor:pointer;
-
-  box-shadow:
-    0 0 18px rgba(0,174,255,.35);
-
-  position:relative;
-
-  overflow:hidden;
-
-  animation:
-    buttonGlow 1.8s ease-in-out infinite;
+width:100%;
+margin-top:15px;
+padding:17px;
+border:0;
+border-radius:13px;
+background:linear-gradient(90deg,#007cff,#00cfff);
+color:white;
+font-weight:900;
+letter-spacing:2px;
+font-size:14px;
+cursor:pointer;
+box-shadow:0 0 18px rgba(0,174,255,.35);
+position:relative;
+overflow:hidden;
+animation:buttonGlow 1.8s ease-in-out infinite
 }
 
 .start:before{
-  content:"";
-
-  position:absolute;
-
-  top:0;
-  bottom:0;
-
-  width:35%;
-
-  left:-50%;
-
-  background:
-    linear-gradient(
-      90deg,
-      transparent,
-      rgba(255,255,255,.42),
-      transparent
-    );
-
-  transform:skewX(-20deg);
-
-  animation:shine 2.8s infinite;
+content:"";
+position:absolute;
+top:0;
+bottom:0;
+width:35%;
+left:-50%;
+background:
+linear-gradient(
+90deg,
+transparent,
+rgba(255,255,255,.42),
+transparent
+);
+transform:skewX(-20deg);
+animation:shine 2.8s infinite
 }
 
 @keyframes buttonGlow{
-  50%{
-    box-shadow:
-      0 0 34px rgba(0,174,255,.62),
-      0 0 8px rgba(0,229,255,.45);
-  }
+50%{
+box-shadow:
+0 0 34px rgba(0,174,255,.62),
+0 0 8px rgba(0,229,255,.45)
+}
 }
 
 @keyframes shine{
-  to{
-    left:125%;
-  }
+to{left:125%}
 }
 
 .start.running{
-  background:
-    linear-gradient(
-      90deg,
-      #00a86b,
-      #00e5a0
-    );
-
-  box-shadow:
-    0 0 30px rgba(0,255,157,.4);
+background:linear-gradient(90deg,#00a86b,#00e5a0);
+box-shadow:0 0 30px rgba(0,255,157,.4)
 }
 
-/* MÉTRICAS */
-
 .metrics{
-  display:grid;
-
-  grid-template-columns:
-    repeat(4,1fr);
-
-  gap:10px;
-
-  margin-top:15px;
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:10px;
+margin-top:15px
 }
 
 .metric{
-  padding:15px;
-
-  border:1px solid rgba(0,170,255,.18);
-
-  border-radius:15px;
-
-  background:rgba(5,12,22,.75);
+padding:15px;
+border:1px solid rgba(0,170,255,.18);
+border-radius:15px;
+background:rgba(5,12,22,.75)
 }
 
 .metric small{
-  display:block;
-
-  color:var(--muted);
-
-  font-size:9px;
-
-  letter-spacing:1px;
+display:block;
+color:var(--muted);
+font-size:9px;
+letter-spacing:1px
 }
 
 .metric strong{
-  display:block;
-
-  font-size:20px;
-
-  margin-top:7px;
+display:block;
+font-size:19px;
+margin-top:7px
 }
 
-.green{
-  color:var(--green);
-}
-
-.blue{
-  color:#72d8ff;
-}
-
-.red{
-  color:#ff6b86;
-}
-
-/* GRÁFICO */
+.green{color:var(--green)}
+.blue{color:#72d8ff}
+.red{color:#ff6b86}
+.yellow{color:var(--yellow)}
 
 .chart{
-  height:190px;
-
-  border-radius:14px;
-
-  border:1px solid rgba(0,170,255,.16);
-
-  background:
-    linear-gradient(
-      180deg,
-      rgba(0,170,255,.05),
-      rgba(0,0,0,.12)
-    );
-
-  position:relative;
-
-  overflow:hidden;
+height:210px;
+border-radius:14px;
+border:1px solid rgba(0,170,255,.16);
+background:
+linear-gradient(
+180deg,
+rgba(0,170,255,.05),
+rgba(0,0,0,.12)
+);
+position:relative;
+overflow:hidden
 }
 
 .chart-grid{
-  position:absolute;
-  inset:0;
-
-  background-image:
-    linear-gradient(
-      rgba(0,170,255,.07) 1px,
-      transparent 1px
-    ),
-    linear-gradient(
-      90deg,
-      rgba(0,170,255,.07) 1px,
-      transparent 1px
-    );
-
-  background-size:
-    45px 38px;
+position:absolute;
+inset:0;
+background-image:
+linear-gradient(
+rgba(0,170,255,.07) 1px,
+transparent 1px
+),
+linear-gradient(
+90deg,
+rgba(0,170,255,.07) 1px,
+transparent 1px
+);
+background-size:45px 38px
 }
 
-svg{
-  position:absolute;
-
-  inset:0;
-
-  width:100%;
-  height:100%;
+canvas{
+position:absolute;
+inset:0;
+width:100%;
+height:100%
 }
 
-.line{
-  fill:none;
-
-  stroke:#00d9ff;
-
-  stroke-width:2.5;
-
-  filter:
-    drop-shadow(
-      0 0 5px rgba(0,217,255,.7)
-    );
-
-  stroke-dasharray:700;
-
-  stroke-dashoffset:700;
-
-  animation:
-    draw 3s linear infinite;
+.decision{
+display:grid;
+grid-template-columns:100px 1fr;
+gap:16px;
+align-items:center
 }
 
-@keyframes draw{
-  to{
-    stroke-dashoffset:0;
-  }
+.signal{
+height:100px;
+border-radius:50%;
+display:grid;
+place-items:center;
+border:2px solid var(--yellow);
+color:var(--yellow);
+font-weight:900;
+font-size:12px;
+text-align:center;
+box-shadow:0 0 25px rgba(255,211,77,.2);
+animation:signal 1.8s infinite
 }
 
-/* IA */
-
-.ai{
-  display:flex;
-
-  align-items:center;
-
-  gap:14px;
+.signal.go{
+border-color:var(--green);
+color:var(--green);
+box-shadow:0 0 30px rgba(0,255,157,.3)
 }
 
-.brain{
-  width:48px;
-  height:48px;
-
-  border-radius:50%;
-
-  display:grid;
-
-  place-items:center;
-
-  border:1px solid rgba(0,229,255,.5);
-
-  background:rgba(0,174,255,.08);
-
-  box-shadow:
-    0 0 22px rgba(0,174,255,.18);
-
-  animation:brain 1.7s infinite;
+.signal.stop{
+border-color:var(--red);
+color:var(--red);
+box-shadow:0 0 30px rgba(255,73,108,.25)
 }
 
-@keyframes brain{
-  50%{
-    box-shadow:
-      0 0 35px rgba(0,229,255,.4);
-  }
+@keyframes signal{
+50%{transform:scale(1.04)}
 }
 
 .ai strong{
-  font-size:15px;
+font-size:16px
 }
 
 .ai p{
-  margin:5px 0 0;
-
-  color:var(--muted);
-
-  font-size:11px;
-
-  line-height:1.45;
+margin:6px 0 0;
+color:var(--muted);
+font-size:11px;
+line-height:1.5
 }
 
-/* LOG */
+.riskbar{
+height:7px;
+border-radius:10px;
+background:#07111d;
+overflow:hidden;
+margin-top:9px
+}
+
+.riskfill{
+height:100%;
+width:35%;
+background:
+linear-gradient(
+90deg,
+var(--green),
+var(--yellow),
+var(--red)
+);
+transition:width .5s
+}
+
+.history{
+width:100%;
+border-collapse:collapse;
+font-size:10px
+}
+
+.history th{
+color:#5e7890;
+text-align:left;
+padding:8px;
+border-bottom:1px solid rgba(0,170,255,.14)
+}
+
+.history td{
+padding:9px 8px;
+border-bottom:1px solid rgba(0,170,255,.08)
+}
+
+.win{color:var(--green)}
+.loss{color:var(--red)}
+.wait{color:var(--yellow)}
 
 .log{
-  font-family:monospace;
-
-  font-size:10px;
-
-  color:#8aa4ba;
-
-  line-height:1.8;
-
-  max-height:120px;
-
-  overflow:hidden;
+font-family:monospace;
+font-size:10px;
+color:#8aa4ba;
+line-height:1.8;
+max-height:110px;
+overflow:hidden
 }
 
 .log span{
-  color:#5edcff;
+color:#5edcff
 }
 
 .footer{
-  text-align:center;
-
-  color:#42566b;
-
-  font-size:9px;
-
-  letter-spacing:1px;
-
-  margin-top:18px;
+text-align:center;
+color:#42566b;
+font-size:9px;
+letter-spacing:1px;
+margin-top:18px
 }
-
-/* CELULAR */
 
 @media(max-width:700px){
 
-  .grid{
-    grid-template-columns:1fr;
-  }
+.grid,
+.metrics{
+grid-template-columns:1fr 1fr
+}
 
-  .metrics{
-    grid-template-columns:repeat(2,1fr);
-  }
+.decision{
+grid-template-columns:80px 1fr
+}
 
-  .status{
-    font-size:9px;
-  }
+.signal{
+width:80px;
+height:80px
+}
 
-  .title{
-    font-size:17px;
-  }
+.title{
+font-size:17px
+}
 
-  h1{
-    font-size:25px;
-  }
+.status{
+font-size:9px
+}
+
+h1{
+font-size:25px
+}
+
+}
+
+@media(max-width:480px){
+
+.grid{
+grid-template-columns:1fr
+}
+
+.metrics{
+grid-template-columns:1fr 1fr
+}
+
 }
 </style>
 </head>
@@ -715,329 +575,412 @@ svg{
 
 <header>
 
-  <div class="brand">
+<div class="brand">
 
-    <div class="logo">
-      ♠
-    </div>
+<div class="logo">♠</div>
 
-    <div>
+<div>
 
-      <div class="title">
-        BLACKJACK AI
-      </div>
+<div class="title">
+BLACKJACK AI
+</div>
 
-      <div class="subtitle">
-        AUTONOMOUS TRADING SYSTEM
-      </div>
+<div class="subtitle">
+AUTONOMOUS TRADING SYSTEM
+</div>
 
-    </div>
+</div>
 
-  </div>
+</div>
 
-  <div class="status">
-    <i class="dot"></i>
-    DEMO ONLINE
-  </div>
+<div class="status">
+
+<i class="dot"></i>
+
+<span id="online">
+DEMO ONLINE
+</span>
+
+</div>
 
 </header>
 
 
 <section class="hero">
 
-  <div class="badge">
-    ◉ TRADING INTELLIGENCE · v3.0
-  </div>
+<div class="badge">
+◉ TRADING INTELLIGENCE · v4.0 SIMULATION
+</div>
 
-  <h1>
-    Central de Operações
-  </h1>
+<h1>
+Central de Operações
+</h1>
 
-  <p class="desc">
-    Sistema de análise automatizada em ambiente de demonstração,
-    com gerenciamento de risco e leitura dinâmica do mercado.
-  </p>
+<p class="desc">
+Motor experimental de análise e gerenciamento de risco em ambiente de demonstração.
+Os resultados abaixo são simulados.
+</p>
 
 
-  <div class="panel">
+<div class="panel">
 
-    <div class="section-title">
-      CONFIGURAÇÃO DO ROBÔ
-    </div>
+<div class="section-title">
+CONFIGURAÇÃO DO ROBÔ
+</div>
 
-    <div class="grid">
+<div class="grid">
 
-      <div>
+<div>
 
-        <label>
-          BANCA DEMO
-        </label>
+<label>
+BANCA DEMO
+</label>
 
-        <input
-          id="bankroll"
-          type="number"
-          value="100"
-          min="1"
-          step="1"
-        >
+<input
+id="bankroll"
+type="number"
+value="100"
+min="1"
+step="1"
+>
 
-      </div>
+</div>
 
 
-      <div>
+<div>
 
-        <label>
-          PERFIL DE RISCO
-        </label>
+<label>
+PERFIL DE RISCO
+</label>
 
-        <select id="risk">
+<select id="risk">
 
-          <option>
-            Conservador
-          </option>
+<option>
+Conservador
+</option>
 
-          <option selected>
-            Equilibrado
-          </option>
+<option selected>
+Equilibrado
+</option>
 
-          <option>
-            Agressivo
-          </option>
+<option>
+Agressivo
+</option>
 
-        </select>
+</select>
 
-      </div>
+</div>
 
 
-      <div>
+<div>
 
-        <label>
-          MERCADO
-        </label>
+<label>
+MERCADO
+</label>
 
-        <select>
+<select id="market">
 
-          <option>
-            Volatility 10
-          </option>
+<option>
+Volatility 10
+</option>
 
-          <option>
-            Volatility 25
-          </option>
+<option>
+Volatility 25
+</option>
 
-          <option>
-            Volatility 50
-          </option>
+<option>
+Volatility 50
+</option>
 
-          <option>
-            Volatility 75
-          </option>
+<option>
+Volatility 75
+</option>
 
-          <option>
-            Volatility 100
-          </option>
+<option>
+Volatility 100
+</option>
 
-        </select>
+</select>
 
-      </div>
+</div>
 
-    </div>
+</div>
 
 
-    <button
-      class="start"
-      id="start"
-    >
-      ▶ INICIAR ROBÔ
-    </button>
+<button
+class="start"
+id="start"
+>
+▶ INICIAR ROBÔ
+</button>
 
-  </div>
+</div>
 
 
-  <div class="metrics">
+<div class="metrics">
 
-    <div class="metric">
+<div class="metric">
 
-      <small>
-        SALDO DEMO
-      </small>
+<small>
+SALDO DEMO
+</small>
 
-      <strong
-        id="balance"
-        class="blue"
-      >
-        $100.00
-      </strong>
+<strong
+id="balance"
+class="blue"
+>
+$100.00
+</strong>
 
-    </div>
+</div>
 
 
-    <div class="metric">
+<div class="metric">
 
-      <small>
-        STATUS
-      </small>
+<small>
+RESULTADO
+</small>
 
-      <strong
-        id="tradeStatus"
-        class="green"
-      >
-        AGUARDANDO
-      </strong>
+<strong
+id="pnl"
+class="green"
+>
+$0.00
+</strong>
 
-    </div>
+</div>
 
 
-    <div class="metric">
+<div class="metric">
 
-      <small>
-        OPERAÇÕES
-      </small>
+<small>
+OPERAÇÕES
+</small>
 
-      <strong id="ops">
-        0
-      </strong>
+<strong id="ops">
+0
+</strong>
 
-    </div>
+</div>
 
 
-    <div class="metric">
+<div class="metric">
 
-      <small>
-        ANÁLISE
-      </small>
+<small>
+ASSERTIVIDADE
+</small>
 
-      <strong
-        id="analysis"
-        class="blue"
-      >
-        READY
-      </strong>
+<strong
+id="accuracy"
+class="blue"
+>
+—
+</strong>
 
-    </div>
+</div>
 
-  </div>
+</div>
 
 
-  <div class="panel">
+<div class="panel">
 
-    <div class="section-title">
-      LEITURA DO MERCADO
-    </div>
+<div class="section-title">
+MERCADO EM TEMPO REAL · SIMULAÇÃO
+</div>
 
-    <div class="chart">
+<div class="chart">
 
-      <div class="chart-grid"></div>
+<div class="chart-grid"></div>
 
-      <svg
-        viewBox="0 0 800 190"
-        preserveAspectRatio="none"
-      >
+<canvas id="chart"></canvas>
 
-        <polyline
-          class="line"
-          points="
-          0,145
-          35,130
-          70,142
-          105,105
-          140,118
-          175,92
-          210,110
-          245,72
-          280,90
-          315,62
-          350,80
-          385,48
-          420,65
-          455,44
-          490,76
-          525,57
-          560,92
-          595,68
-          630,84
-          665,55
-          700,71
-          735,42
-          770,59
-          800,35
-          "
-        ></polyline>
+</div>
 
-      </svg>
+</div>
 
-    </div>
 
-  </div>
+<div class="panel">
 
+<div class="section-title">
+DECISÃO DA INTELIGÊNCIA
+</div>
 
-  <div class="panel">
+<div class="decision">
 
-    <div class="section-title">
-      DECISÃO DA INTELIGÊNCIA
-    </div>
+<div
+class="signal"
+id="signal"
+>
+AGUARDAR
+</div>
 
-    <div class="ai">
+<div class="ai">
 
-      <div class="brain">
-        ✦
-      </div>
+<strong id="decision">
+AGUARDANDO INICIALIZAÇÃO
+</strong>
 
-      <div>
+<p id="decisionText">
+Clique em INICIAR ROBÔ para ativar o ciclo de análise simulada.
+</p>
 
-        <strong id="decision">
-          AGUARDANDO INICIALIZAÇÃO
-        </strong>
+<div class="riskbar">
 
-        <p id="decisionText">
-          O sistema permanece em modo seguro
-          até o robô ser iniciado.
-        </p>
+<div
+class="riskfill"
+id="riskfill"
+></div>
 
-      </div>
+</div>
 
-    </div>
+</div>
 
-  </div>
+</div>
 
+</div>
 
-  <div class="panel">
 
-    <div class="section-title">
-      ATIVIDADE DO SISTEMA
-    </div>
+<div class="panel">
 
-    <div
-      class="log"
-      id="log"
-    >
+<div class="section-title">
+GERENCIAMENTO DE BANCA
+</div>
 
-      <div>
-        <span>[SYSTEM]</span>
-        BlackJack AI inicializado.
-      </div>
+<div class="grid">
 
-      <div>
-        <span>[DEMO]</span>
-        Ambiente de simulação ativo.
-      </div>
+<div class="metric">
 
-      <div>
-        <span>[AI]</span>
-        Aguardando comando de inicialização...
-      </div>
+<small>
+RISCO POR OPERAÇÃO
+</small>
 
-    </div>
+<strong
+id="stake"
+class="yellow"
+>
+$0.50
+</strong>
 
-  </div>
+</div>
+
+
+<div class="metric">
+
+<small>
+STOP VIRTUAL
+</small>
+
+<strong id="stop">
+5.0%
+</strong>
+
+</div>
+
+
+<div class="metric">
+
+<small>
+SEQUÊNCIA
+</small>
+
+<strong id="streak">
+0
+</strong>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="panel">
+
+<div class="section-title">
+HISTÓRICO DA SIMULAÇÃO
+</div>
+
+<table class="history">
+
+<thead>
+
+<tr>
+
+<th>
+#
+</th>
+
+<th>
+SINAL
+</th>
+
+<th>
+RESULTADO
+</th>
+
+<th>
+SALDO
+</th>
+
+</tr>
+
+</thead>
+
+<tbody id="history">
+
+<tr>
+
+<td
+colspan="4"
+style="color:#7890a7"
+>
+Nenhuma operação simulada ainda.
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+
+<div class="panel">
+
+<div class="section-title">
+ATIVIDADE DO SISTEMA
+</div>
+
+<div
+class="log"
+id="log"
+>
+
+<div>
+<span>[SYSTEM]</span>
+BlackJack AI v4 inicializado.
+</div>
+
+<div>
+<span>[DEMO]</span>
+Nenhuma ordem real será enviada.
+</div>
+
+<div>
+<span>[AI]</span>
+Motor aguardando inicialização.
+</div>
+
+</div>
+
+</div>
 
 </section>
 
 
 <div class="footer">
-
-  BLACKJACK AI · DEMO ENVIRONMENT · TRADING INTELLIGENCE
-
+BLACKJACK AI · DEMO ENVIRONMENT · SIMULATION ENGINE
 </div>
 
 </div>
@@ -1045,191 +988,641 @@ svg{
 
 <script>
 
-const start =
-  document.getElementById("start");
+const $ = id => document.getElementById(id);
 
-const status =
-  document.getElementById("tradeStatus");
+const start = $("start");
+const bankroll = $("bankroll");
+const risk = $("risk");
 
-const analysis =
-  document.getElementById("analysis");
+const balance = $("balance");
+const pnl = $("pnl");
+const ops = $("ops");
+const accuracy = $("accuracy");
 
-const decision =
-  document.getElementById("decision");
+const decision = $("decision");
+const decisionText = $("decisionText");
+const signal = $("signal");
 
-const decisionText =
-  document.getElementById("decisionText");
+const stake = $("stake");
+const streak = $("streak");
+const riskfill = $("riskfill");
 
-const log =
-  document.getElementById("log");
+const history = $("history");
+const log = $("log");
 
-const ops =
-  document.getElementById("ops");
+const canvas = $("chart");
+const ctx = canvas.getContext("2d");
 
-const balance =
-  document.getElementById("balance");
 
 let running = false;
 let timer = null;
+
+let price = 100;
+let points = [];
+
 let count = 0;
+let wins = 0;
+let losses = 0;
+
+let simBalance = 100;
+let streakN = 0;
 
 
-function addLog(msg){
+function resize(){
 
-  const d =
-    document.createElement("div");
+canvas.width =
+canvas.clientWidth *
+devicePixelRatio;
 
-  d.innerHTML =
-    "<span>[AI]</span> " + msg;
+canvas.height =
+canvas.clientHeight *
+devicePixelRatio;
 
-  log.prepend(d);
-
-  while(log.children.length > 6){
-    log.removeChild(
-      log.lastChild
-    );
-  }
+drawChart();
 
 }
 
 
-start.addEventListener(
-  "click",
-  () => {
+window.addEventListener(
+"resize",
+resize
+);
 
-    running = !running;
-
-    if(running){
-
-      start.classList.add(
-        "running"
-      );
-
-      start.textContent =
-        "■ ROBÔ EM EXECUÇÃO";
-
-      status.textContent =
-        "ANALISANDO";
-
-      analysis.textContent =
-        "SCANNING";
-
-      decision.textContent =
-        "ANALISANDO MERCADO";
-
-      decisionText.textContent =
-        "Coletando sinais e avaliando condições de entrada em modo demonstração.";
-
-      addLog(
-        "Motor de análise iniciado."
-      );
+resize();
 
 
-      timer =
-        setInterval(
-          () => {
+function addLog(text){
 
-            count++;
+const d =
+document.createElement("div");
 
-            ops.textContent =
-              count;
+d.innerHTML =
+"<span>[AI]</span> " +
+text;
 
+log.prepend(d);
 
-            const states = [
+while(log.children.length > 7){
 
-              [
-                "AGUARDANDO SINAL",
-                "Sem entrada segura no momento."
-              ],
+log.lastChild.remove();
 
-              [
-                "MONITORANDO",
-                "Volatilidade dentro dos parâmetros de análise."
-              ],
+}
 
-              [
-                "SINAL EM ANÁLISE",
-                "Confirmação de condições antes de qualquer simulação."
-              ]
-
-            ];
+}
 
 
-            const s =
-              states[
-                count % states.length
-              ];
+function profile(){
+
+const b =
+Math.max(
+1,
+Number(bankroll.value) || 100
+);
+
+const r = risk.value;
+
+const pct =
+r === "Conservador"
+? 0.005
+: r === "Equilibrado"
+? 0.01
+: 0.02;
 
 
-            decision.textContent =
-              s[0];
+stake.textContent =
+"$" +
+(b * pct).toFixed(2);
 
-            decisionText.textContent =
-              s[1];
 
-            analysis.textContent =
-              count % 2
-                ? "SCANNING"
-                : "FILTERING";
+riskfill.style.width =
+r === "Conservador"
+? "25%"
+: r === "Equilibrado"
+? "55%"
+: "85%";
 
-            addLog(
-              s[0] + "."
-            );
 
-          },
-          2600
-        );
+$("stop").textContent =
+r === "Conservador"
+? "3.0%"
+: r === "Equilibrado"
+? "5.0%"
+: "8.0%";
 
-    }else{
 
-      clearInterval(timer);
+if(!running && count === 0){
 
-      start.classList.remove(
-        "running"
-      );
+simBalance = b;
 
-      start.textContent =
-        "▶ INICIAR ROBÔ";
+balance.textContent =
+"$" +
+b.toFixed(2);
 
-      status.textContent =
-        "AGUARDANDO";
+pnl.textContent =
+"$0.00";
 
-      analysis.textContent =
-        "READY";
+}
 
-      decision.textContent =
-        "ROBÔ PAUSADO";
+}
 
-      decisionText.textContent =
-        "Execução interrompida. Nenhuma operação real é realizada neste modo.";
 
-      addLog(
-        "Motor de análise pausado."
-      );
+risk.addEventListener(
+"change",
+profile
+);
 
-    }
+bankroll.addEventListener(
+"input",
+profile
+);
 
-  }
+profile();
+
+
+function drawChart(){
+
+const w = canvas.width;
+const h = canvas.height;
+
+if(!w || !h)
+return;
+
+ctx.clearRect(
+0,
+0,
+w,
+h
+);
+
+if(points.length < 2)
+return;
+
+
+const min =
+Math.min(...points) - 2;
+
+const max =
+Math.max(...points) + 2;
+
+
+ctx.beginPath();
+
+
+points.forEach(
+(v,i)=>{
+
+const x =
+i /
+(points.length - 1) *
+w;
+
+const y =
+h -
+(
+(v - min) /
+(max - min)
+*
+h *
+0.78
+) -
+h *
+0.08;
+
+
+if(i)
+ctx.lineTo(x,y);
+
+else
+ctx.moveTo(x,y);
+
+}
 );
 
 
-document
-  .getElementById("bankroll")
-  .addEventListener(
-    "input",
-    e => {
+ctx.strokeStyle =
+"#00d9ff";
 
-      const v =
-        Math.max(
-          0,
-          Number(e.target.value) || 0
-        );
+ctx.lineWidth =
+3 *
+devicePixelRatio;
 
-      balance.textContent =
-        "$" + v.toFixed(2);
+ctx.shadowBlur =
+12 *
+devicePixelRatio;
 
-    }
-  );
+ctx.shadowColor =
+"#00d9ff";
+
+ctx.stroke();
+
+ctx.shadowBlur = 0;
+
+}
+
+
+function marketStep(){
+
+const move =
+(
+Math.random() - 0.47
+) *
+(
+risk.value === "Agressivo"
+? 3
+: 2
+);
+
+
+price =
+Math.max(
+70,
+price + move
+);
+
+
+points.push(price);
+
+
+if(points.length > 70)
+points.shift();
+
+
+drawChart();
+
+
+const momentum =
+points.length > 8
+?
+points[points.length - 1]
+-
+points[points.length - 8]
+:
+0;
+
+
+const vol =
+Math.abs(move);
+
+
+let s;
+let reason;
+
+
+if(vol > 2.1){
+
+s =
+"NÃO ENTRAR";
+
+reason =
+"Volatilidade instantânea acima do filtro de segurança.";
+
+}
+
+else if(momentum > 2.2){
+
+s =
+"ENTRAR";
+
+reason =
+"Momentum positivo detectado na simulação.";
+
+}
+
+else if(momentum < -2.2){
+
+s =
+"ENTRAR";
+
+reason =
+"Movimento descendente com confirmação simulada.";
+
+}
+
+else{
+
+s =
+"AGUARDAR";
+
+reason =
+"Não há confirmação suficiente para uma entrada simulada.";
+
+}
+
+
+signal.className =
+"signal " +
+(
+s === "ENTRAR"
+? "go"
+: s === "NÃO ENTRAR"
+? "stop"
+: ""
+);
+
+
+signal.textContent =
+s;
+
+
+decision.textContent =
+s;
+
+
+decisionText.textContent =
+reason;
+
+
+riskfill.style.width =
+Math.min(
+95,
+Math.max(
+15,
+vol * 25
+)
+) + "%";
+
+
+if(
+s === "ENTRAR" &&
+Math.random() < 0.58
+){
+
+simulateTrade(s);
+
+}
+
+
+addLog(reason);
+
+}
+
+
+function simulateTrade(s){
+
+count++;
+
+
+const b =
+Math.max(
+1,
+Number(bankroll.value) || 100
+);
+
+
+const pct =
+risk.value === "Conservador"
+? 0.005
+: risk.value === "Equilibrado"
+? 0.01
+: 0.02;
+
+
+const amount =
+b * pct;
+
+
+const won =
+Math.random() > 0.43;
+
+
+const result =
+won
+? amount * 0.82
+: -amount;
+
+
+simBalance += result;
+
+
+wins +=
+won
+? 1
+: 0;
+
+
+losses +=
+won
+? 0
+: 1;
+
+
+streakN =
+won
+? Math.max(1, streakN + 1)
+: Math.min(-1, streakN - 1);
+
+
+balance.textContent =
+"$" +
+simBalance.toFixed(2);
+
+
+pnl.textContent =
+(
+simBalance - b >= 0
+? "+"
+: ""
+) +
+"$" +
+(simBalance - b).toFixed(2);
+
+
+pnl.className =
+simBalance - b >= 0
+? "green"
+: "red";
+
+
+ops.textContent =
+count;
+
+
+accuracy.textContent =
+Math.round(
+wins / count * 100
+) +
+"%";
+
+
+streak.textContent =
+streakN;
+
+
+const row =
+document.createElement("tr");
+
+
+row.innerHTML =
+
+"<td>" +
+count +
+"</td>" +
+
+"<td class='wait'>" +
+s +
+"</td>" +
+
+"<td class='" +
+(won ? "win" : "loss") +
+"'>" +
+
+(won
+? "WIN +"
+: "LOSS -") +
+
+"$" +
+
+Math.abs(result).toFixed(2) +
+
+"</td>" +
+
+"<td>$" +
+simBalance.toFixed(2) +
+"</td>";
+
+
+if(
+history.children.length === 1 &&
+history.children[0].children.length === 1
+){
+
+history.innerHTML = "";
+
+}
+
+
+history.prepend(row);
+
+
+while(history.children.length > 8){
+
+history.lastChild.remove();
+
+}
+
+
+addLog(
+"Operação DEMO #" +
+count +
+" encerrada: " +
+(
+won
+? "resultado positivo."
+: "resultado negativo."
+)
+);
+
+}
+
+
+start.onclick = () => {
+
+running = !running;
+
+
+if(running){
+
+start.classList.add("running");
+
+start.textContent =
+"■ ROBÔ EM EXECUÇÃO";
+
+
+$("online").textContent =
+"IA ANALISANDO";
+
+
+decision.textContent =
+"INICIANDO MOTOR";
+
+
+decisionText.textContent =
+"Coletando dados simulados e aplicando filtros de risco.";
+
+
+price = 100;
+
+points = [price];
+
+
+simBalance =
+Math.max(
+1,
+Number(bankroll.value) || 100
+);
+
+
+balance.textContent =
+"$" +
+simBalance.toFixed(2);
+
+
+pnl.textContent =
+"$0.00";
+
+
+pnl.className =
+"green";
+
+
+addLog(
+"Motor de simulação iniciado."
+);
+
+
+clearInterval(timer);
+
+
+timer =
+setInterval(
+marketStep,
+1800
+);
+
+
+}
+
+else{
+
+clearInterval(timer);
+
+
+start.classList.remove(
+"running"
+);
+
+
+start.textContent =
+"▶ INICIAR ROBÔ";
+
+
+$("online").textContent =
+"DEMO ONLINE";
+
+
+signal.className =
+"signal";
+
+
+signal.textContent =
+"AGUARDAR";
+
+
+decision.textContent =
+"ROBÔ PAUSADO";
+
+
+decisionText.textContent =
+"Simulação interrompida. Nenhuma ordem real foi enviada.";
+
+
+addLog(
+"Motor de simulação pausado."
+);
+
+}
+
+};
 
 </script>
 
